@@ -130,6 +130,12 @@ textarea {
     var(--panel);
 }
 
+:root[data-theme="dark"] .summary-card {
+  background:
+    linear-gradient(180deg, rgba(40, 30, 24, 0.96), rgba(24, 18, 15, 0.92)),
+    var(--panel);
+}
+
 .result-screen-card {
   max-width: 860px;
 }
@@ -141,6 +147,10 @@ textarea {
 .section-title {
   margin: 0 0 8px;
   font-size: 1.4rem;
+}
+
+:root[data-theme="dark"] .summary-card .section-title {
+  color: #fff1e5;
 }
 
 .section-copy {
@@ -571,6 +581,10 @@ textarea {
 :root[data-theme="dark"] .result-block p,
 :root[data-theme="dark"] .result-block li,
 :root[data-theme="dark"] .empty-inline {
+  color: #ddcabb;
+}
+
+:root[data-theme="dark"] .result-block ul {
   color: #ddcabb;
 }
 
