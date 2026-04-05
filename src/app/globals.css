@@ -13,6 +13,20 @@
   font-family: "Georgia", "Times New Roman", serif;
 }
 
+:root[data-theme="dark"] {
+  color-scheme: dark;
+  --bg: #16110e;
+  --panel: rgba(36, 28, 23, 0.78);
+  --panel-strong: #231b17;
+  --border: rgba(255, 231, 208, 0.12);
+  --text: #f7ede2;
+  --muted: #c8b6a7;
+  --accent: #ff9a62;
+  --accent-soft: #f7c48c;
+  --danger: #ff9586;
+  --shadow: 0 32px 90px rgba(0, 0, 0, 0.34);
+}
+
 * {
   box-sizing: border-box;
 }
@@ -29,6 +43,16 @@ body {
     radial-gradient(circle at top left, rgba(239, 176, 113, 0.55), transparent 30%),
     radial-gradient(circle at right center, rgba(199, 101, 59, 0.22), transparent 25%),
     linear-gradient(160deg, #f8f3ea 0%, var(--bg) 58%, #efe3d3 100%);
+  transition:
+    background 220ms ease,
+    color 220ms ease;
+}
+
+:root[data-theme="dark"] body {
+  background:
+    radial-gradient(circle at top left, rgba(255, 154, 98, 0.22), transparent 26%),
+    radial-gradient(circle at right center, rgba(255, 205, 144, 0.12), transparent 22%),
+    linear-gradient(165deg, #281d18 0%, var(--bg) 55%, #110d0b 100%);
 }
 
 button,
@@ -40,7 +64,7 @@ textarea {
 .page-shell {
   width: min(1120px, calc(100% - 32px));
   margin: 0 auto;
-  padding: 56px 0 72px;
+  padding: 88px 0 72px;
 }
 
 .hero {
@@ -143,9 +167,10 @@ textarea {
 .field textarea,
 .field input[type="file"] {
   width: 100%;
-  border: 1px solid rgba(73, 51, 32, 0.18);
+  border: 1px solid var(--border);
   border-radius: 20px;
-  background: rgba(255, 252, 247, 0.92);
+  color: var(--text);
+  background: color-mix(in srgb, var(--panel-strong) 88%, transparent);
 }
 
 .field textarea {
@@ -177,10 +202,10 @@ textarea {
   align-items: center;
   width: fit-content;
   padding: 14px 18px;
-  border: 1px solid rgba(73, 51, 32, 0.16);
+  border: 1px solid var(--border);
   border-radius: 999px;
   color: var(--text);
-  background: rgba(255, 252, 247, 0.92);
+  background: color-mix(in srgb, var(--panel-strong) 88%, transparent);
   cursor: pointer;
   transition:
     transform 160ms ease,
@@ -192,6 +217,16 @@ textarea {
   transform: translateY(-1px);
   border-color: rgba(199, 101, 59, 0.3);
   box-shadow: 0 10px 24px rgba(106, 71, 35, 0.1);
+}
+
+.file-picker:focus-visible,
+.secondary-button:focus-visible,
+.back-button:focus-visible,
+.submit-button:focus-visible,
+.theme-toggle:focus-visible,
+.field textarea:focus-visible {
+  outline: 2px solid color-mix(in srgb, var(--accent) 72%, white);
+  outline-offset: 3px;
 }
 
 .file-picker-glyph {
@@ -215,9 +250,9 @@ textarea {
   overflow: hidden;
   width: 100%;
   max-width: 320px;
-  border: 1px solid rgba(73, 51, 32, 0.12);
+  border: 1px solid var(--border);
   border-radius: 20px;
-  background: rgba(255, 252, 247, 0.92);
+  background: color-mix(in srgb, var(--panel-strong) 88%, transparent);
 }
 
 .image-preview img {
@@ -243,9 +278,9 @@ textarea {
   display: grid;
   gap: 16px;
   padding: 18px;
-  border: 1px solid rgba(73, 51, 32, 0.12);
+  border: 1px solid var(--border);
   border-radius: 24px;
-  background: rgba(255, 249, 241, 0.72);
+  background: color-mix(in srgb, var(--panel-strong) 76%, transparent);
 }
 
 .confirmation-header {
@@ -256,21 +291,21 @@ textarea {
 }
 
 .secondary-button {
-  border: 1px solid rgba(73, 51, 32, 0.16);
+  border: 1px solid var(--border);
   border-radius: 999px;
   padding: 10px 14px;
   color: var(--text);
-  background: rgba(255, 252, 247, 0.92);
+  background: color-mix(in srgb, var(--panel-strong) 88%, transparent);
   cursor: pointer;
 }
 
 .back-button {
   justify-self: start;
-  border: 1px solid rgba(73, 51, 32, 0.16);
+  border: 1px solid var(--border);
   border-radius: 999px;
   padding: 10px 14px;
   color: var(--text);
-  background: rgba(255, 252, 247, 0.92);
+  background: color-mix(in srgb, var(--panel-strong) 88%, transparent);
   cursor: pointer;
 }
 
@@ -388,8 +423,8 @@ textarea {
 .pill {
   padding: 8px 12px;
   border-radius: 999px;
-  background: rgba(199, 101, 59, 0.1);
-  color: #81472d;
+  background: color-mix(in srgb, var(--accent) 18%, transparent);
+  color: var(--text);
   font-size: 0.92rem;
 }
 
@@ -405,8 +440,8 @@ textarea {
 .result-overview-row {
   padding: 16px 18px;
   border-radius: 22px;
-  border: 1px solid rgba(73, 51, 32, 0.12);
-  background: rgba(255, 252, 247, 0.85);
+  border: 1px solid var(--border);
+  background: color-mix(in srgb, var(--panel-strong) 88%, transparent);
 }
 
 .result-overview-label,
@@ -438,8 +473,8 @@ textarea {
 .result-section-card {
   padding: 16px;
   border-radius: 22px;
-  border: 1px solid rgba(73, 51, 32, 0.12);
-  background: rgba(255, 252, 247, 0.85);
+  border: 1px solid var(--border);
+  background: color-mix(in srgb, var(--panel-strong) 88%, transparent);
 }
 
 .result-section-card--beneficial h3 {
@@ -486,8 +521,8 @@ textarea {
 .result-empty {
   padding: 18px;
   border-radius: 24px;
-  border: 1px dashed rgba(73, 51, 32, 0.18);
-  background: rgba(255, 252, 247, 0.7);
+  border: 1px dashed var(--border);
+  background: color-mix(in srgb, var(--panel-strong) 82%, transparent);
 }
 
 .result-error-state {
@@ -508,8 +543,8 @@ textarea {
 .result-note {
   padding: 16px 18px;
   border-radius: 22px;
-  background: rgba(255, 252, 247, 0.85);
-  border: 1px solid rgba(73, 51, 32, 0.1);
+  background: color-mix(in srgb, var(--panel-strong) 88%, transparent);
+  border: 1px solid var(--border);
 }
 
 .result-block h3 {
@@ -526,6 +561,54 @@ textarea {
 .result-block ul {
   padding-left: 18px;
   margin: 0;
+}
+
+.theme-toggle {
+  position: fixed;
+  top: max(14px, env(safe-area-inset-top));
+  right: max(14px, env(safe-area-inset-right));
+  z-index: 20;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 54px;
+  height: 54px;
+  border: 1px solid var(--border);
+  border-radius: 999px;
+  color: var(--text);
+  background: color-mix(in srgb, var(--panel) 94%, transparent);
+  backdrop-filter: blur(18px);
+  box-shadow: 0 12px 30px rgba(30, 19, 14, 0.16);
+  cursor: pointer;
+  transition:
+    transform 160ms ease,
+    background 220ms ease,
+    border-color 220ms ease;
+}
+
+.theme-toggle:hover {
+  transform: translateY(-1px) scale(1.02);
+}
+
+.theme-toggle:active {
+  transform: scale(0.97);
+}
+
+.theme-toggle-icon {
+  font-size: 1.35rem;
+  line-height: 1;
+}
+
+.theme-toggle-icon-sun {
+  display: none;
+}
+
+:root[data-theme="dark"] .theme-toggle-icon-sun {
+  display: inline;
+}
+
+:root[data-theme="dark"] .theme-toggle-icon-moon {
+  display: none;
 }
 
 @keyframes flower-spin {
@@ -547,13 +630,18 @@ textarea {
 @media (max-width: 640px) {
   .page-shell {
     width: min(100% - 20px, 1120px);
-    padding: 32px 0 48px;
+    padding: 86px 0 48px;
   }
 
   .form-card,
   .summary-card {
     padding: 20px;
     border-radius: 22px;
+  }
+
+  .eyebrow {
+    font-size: 2.2rem;
+    letter-spacing: 0.18em;
   }
 
   .hero-copy {
@@ -572,5 +660,12 @@ textarea {
   .result-hero,
   .result-grid {
     grid-template-columns: 1fr;
+  }
+
+  .theme-toggle {
+    top: max(12px, env(safe-area-inset-top));
+    right: max(12px, env(safe-area-inset-right));
+    width: 50px;
+    height: 50px;
   }
 }
