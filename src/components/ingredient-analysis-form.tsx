@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import { useEffect, useState } from "react";
 
@@ -253,7 +253,7 @@ export function IngredientAnalysisForm() {
             >
               <span className="file-picker-text">Выбрать фото</span>
             </label>
-            <p className="form-hint">JPG, JPEG, PNG и WEBP</p>
+            <p className="form-hint"></p>
             {selectedImage ? <p className="form-hint">Выбранный файл: {selectedImage.name}</p> : null}
             {imagePreviewUrl ? (
               <div className="image-preview">
@@ -327,13 +327,9 @@ export function IngredientAnalysisForm() {
               </div>
             </div>
           ) : (
-            <div className="result-block result-note">
-              <h3>Как это работает</h3>
-              <ul>
-                <li>Загрузите фото состава.</li>
-                <li>Сервис распознает текст на изображении.</li>
-                <li>После этого вы получите полный анализ ингредиентов вашей косметики.</li>
-              </ul>
+            <div className="">
+
+
             </div>
           )}
 
