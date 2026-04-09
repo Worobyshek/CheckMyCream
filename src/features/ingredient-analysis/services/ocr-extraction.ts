@@ -26,16 +26,10 @@ export async function extractTextFromImage(file: File): Promise<OCRExtractionRes
 }
 
 function resolveOCRProvider(): OCRProviderAdapter {
-  const configuredProvider = ocrProviderNameSchema.safeParse(
-    getServerEnv("OCR_PROVIDER") ?? "tesseract",
-  );
+  const configuredProvider = ocrProviderNameSchema.safeParse(getServerEnv("OCR_PROVIDER") ?? "tesseract");
 
   if (!configuredProvider.success) {
-    throw new AppError({
-      code: "unsupported_ocr_provider",
-      message: "A real OCR provider must be configured for image extraction.",
-      statusCode: 503,
-    });
+    return tesseractOCRProvider;
   }
 
   switch (configuredProvider.data) {
