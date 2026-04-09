@@ -11,6 +11,8 @@ import {
 
 const acceptedImageTypes = ["image/jpeg", "image/png", "image/webp"] as const;
 const maxImageSizeBytes = 25 * 1024 * 1024;
+const maxUploadSizeBytes = 900 * 1024;
+const maxUploadDimension = 1600;
 
 type SubmissionState =
   | { type: "idle" }
@@ -51,7 +53,7 @@ export function IngredientAnalysisForm() {
     };
   }, [selectedImage]);
 
-  function handleImageChange(event: React.ChangeEvent<HTMLInputElement>) {
+  async function handleImageChange(event: React.ChangeEvent<HTMLInputElement>) {
     const file = event.target.files?.[0] ?? null;
 
     if (!file) {
@@ -72,7 +74,20 @@ export function IngredientAnalysisForm() {
       return;
     }
 
-    setSelectedImage(file);
+    try {
+      const preparedFile = await prepareImageForOCR(file);
+      setSelectedImage(preparedFile);
+    } catch {
+      setSelectedImage(null);
+      setClientError("Не удалось подготовить изображение. Попробуйте выбрать другое фото.");
+      setOCRState({ type: "idle" });
+      setSubmissionState({ type: "idle" });
+      setConfirmedText("");
+      setFlowStep("input");
+      event.target.value = "";
+      return;
+    }
+
     setClientError(null);
     setOCRState({ type: "idle" });
     setSubmissionState({ type: "idle" });
@@ -116,7 +131,6 @@ export function IngredientAnalysisForm() {
     try {
       const analysis = await requestFullIngredientAnalysis({
         ingredientsText: finalText,
-        image: selectedImage,
       });
 
       setSubmissionState({ type: "success", data: analysis });
@@ -418,6 +432,80 @@ function validateImageFile(file: File): string | null {
   }
 
   return null;
+}
+
+async function prepareImageForOCR(file: File): Promise<File> {
+  if (file.size <= maxUploadSizeBytes) {
+    return file;
+  }
+
+  const imageBitmap = await readFileAsImage(file);
+  const { width, height } = fitImageIntoBounds(imageBitmap.width, imageBitmap.height, maxUploadDimension);
+  const canvas = document.createElement("canvas");
+  canvas.width = width;
+  canvas.height = height;
+
+  const context = canvas.getContext("2d");
+  if (!context) {
+    throw new Error("Canvas 2D context is unavailable.");
+  }
+
+  context.drawImage(imageBitmap, 0, 0, width, height);
+
+  let quality = 0.9;
+  let output = await canvasToFile(canvas, file.name, quality);
+
+  while (output.size > maxUploadSizeBytes && quality > 0.45) {
+    quality -= 0.1;
+    output = await canvasToFile(canvas, file.name, quality);
+  }
+
+  return output;
+}
+
+async function readFileAsImage(file: File): Promise<HTMLImageElement> {
+  const imageUrl = URL.createObjectURL(file);
+
+  try {
+    const image = new Image();
+    image.decoding = "async";
+
+    await new Promise<void>((resolve, reject) => {
+      image.onload = () => resolve();
+      image.onerror = () => reject(new Error("Failed to decode image."));
+      image.src = imageUrl;
+    });
+
+    return image;
+  } finally {
+    URL.revokeObjectURL(imageUrl);
+  }
+}
+
+function fitImageIntoBounds(width: number, height: number, maxDimension: number) {
+  const scale = Math.min(1, maxDimension / Math.max(width, height));
+
+  return {
+    width: Math.max(1, Math.round(width * scale)),
+    height: Math.max(1, Math.round(height * scale)),
+  };
+}
+
+async function canvasToFile(canvas: HTMLCanvasElement, originalName: string, quality: number): Promise<File> {
+  const blob = await new Promise<Blob | null>((resolve) => {
+    canvas.toBlob(resolve, "image/jpeg", quality);
+  });
+
+  if (!blob) {
+    throw new Error("Failed to encode image.");
+  }
+
+  const normalizedName = originalName.replace(/\.[^.]+$/, "") || "captured-image";
+
+  return new File([blob], `${normalizedName}.jpg`, {
+    type: "image/jpeg",
+    lastModified: Date.now(),
+  });
 }
 
 function toUserFacingMessage(error: APIClientError): string {
