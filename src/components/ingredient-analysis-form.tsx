@@ -10,7 +10,7 @@ import {
 } from "@/lib/api-client";
 
 const acceptedImageTypes = ["image/jpeg", "image/png", "image/webp"] as const;
-const maxImageSizeBytes = 10 * 1024 * 1024;
+const maxImageSizeBytes = 25 * 1024 * 1024;
 
 type SubmissionState =
   | { type: "idle" }
@@ -414,7 +414,7 @@ function validateImageFile(file: File): string | null {
   }
 
   if (file.size > maxImageSizeBytes) {
-    return "Файл слишком большой. Максимальный размер - 10 МБ.";
+    return "Файл слишком большой. Максимальный размер - 25 МБ.";
   }
 
   return null;
