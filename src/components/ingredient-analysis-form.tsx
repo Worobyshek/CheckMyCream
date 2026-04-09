@@ -289,7 +289,6 @@ export function IngredientAnalysisForm() {
                 <span className="file-picker-text">Выбрать из галереи</span>
               </button>
             </div>
-            <p className="form-hint">На телефоне кнопка "Сделать фото" открывает камеру для нового снимка.</p>
             {selectedImage ? <p className="form-hint">Выбранный файл: {selectedImage.name}</p> : null}
             {imagePreviewUrl ? (
               <div className="image-preview">

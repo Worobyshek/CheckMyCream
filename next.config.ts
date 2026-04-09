@@ -4,6 +4,7 @@ const isCapacitorBuild = process.env.CAPACITOR_BUILD === "true";
 
 const nextConfig: NextConfig = {
   reactStrictMode: true,
+  serverExternalPackages: ["tesseract.js"],
   ...(isCapacitorBuild
     ? {
         output: "export",

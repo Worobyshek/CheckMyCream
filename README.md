@@ -77,16 +77,16 @@ Copy `.env.example` to `.env.local` for local development.
   - Server only
 
 - `OCR_PROVIDER`
-  - `remote` to use a real external OCR or vision API
+  - `tesseract` to use local server-side OCR with `tesseract.js`
 
-- `OCR_API_URL`
-  - Base URL or endpoint for the external OCR API
-  - Required when `OCR_PROVIDER=remote`
+- `OCR_LANGUAGE`
+  - Tesseract language code used by the local OCR worker
+  - Default: `eng`
+  - For cosmetic ingredient labels, `eng` is usually the best default because INCI names are Latin-based
 
-- `OCR_API_KEY`
-  - Secret API key for the external OCR API
-  - Required when `OCR_PROVIDER=remote`
-  - Server only
+- `OCR_TESSDATA_PATH`
+  - Optional local path or URL to Tesseract traineddata files
+  - If omitted, `tesseract.js` uses its default language data source
 
 ## Local run
 
@@ -106,20 +106,19 @@ Copy-Item .env.example .env.local
 
 ### 3. Configure providers
 
-Set real OCR configuration:
+Set provider configuration:
 
 - `AI_PROVIDER=remote`
 - `AI_API_URL`
 - `AI_API_KEY`
-- `OCR_PROVIDER=remote`
-- `OCR_API_URL`
-- `OCR_API_KEY`
+- `OCR_PROVIDER=tesseract`
+- `OCR_LANGUAGE=eng`
 
 If you want to test AI without a real AI provider, you can still use:
 
 ```env
 AI_PROVIDER=mock
-OCR_PROVIDER=remote
+OCR_PROVIDER=tesseract
 ```
 
 ### 4. Start the app
@@ -202,7 +201,7 @@ npm run android:open
 1. Push the repository to GitHub, GitLab, or Bitbucket.
 2. Import the project into Vercel.
 3. Add the production environment variables from `.env.example`.
-4. Keep all AI and OCR secrets only in server-side env vars.
+4. Keep all AI secrets only in server-side env vars.
 5. Deploy.
 
 Recommended production env setup:
@@ -214,9 +213,9 @@ AI_PROVIDER=remote
 AI_API_URL=https://openrouter.ai/api/v1/chat/completions
 AI_API_KEY=__PASTE_KEY_HERE__
 AI_MODEL=openai/gpt-4o-mini
-OCR_PROVIDER=remote
-OCR_API_URL=https://api.ocr.space/parse/image
-OCR_API_KEY=__PASTE_KEY_HERE__
+OCR_PROVIDER=tesseract
+OCR_LANGUAGE=eng
+OCR_TESSDATA_PATH=
 ```
 
 Notes:
@@ -246,21 +245,22 @@ This value is read by:
 
 - Deploy as a standard Next.js app.
 - Add all environment variables in the Vercel project settings.
-- Keep OCR and AI secrets in Vercel server environment variables only.
-- Do not expose `AI_API_KEY` or `OCR_API_KEY` through public env vars.
+- Keep AI secrets in Vercel server environment variables only.
+- Do not expose `AI_API_KEY` through public env vars.
 
 ### Suggested production config
 
 - Use `AI_PROVIDER=remote`
-- Use `OCR_PROVIDER=remote`
-- Set `AI_API_URL`, `AI_API_KEY`, `OCR_API_URL`, `OCR_API_KEY`
+- Use `OCR_PROVIDER=tesseract`
+- Set `AI_API_URL`, `AI_API_KEY`
+- Optionally set `OCR_LANGUAGE` and `OCR_TESSDATA_PATH`
 
 ### Before deploying
 
 1. Make sure mock providers are disabled in production.
-   OCR must use a real provider. There is no filename-based OCR fallback.
-2. Confirm the external OCR and AI endpoints are reachable from Vercel.
-3. Check timeout behavior for your chosen providers.
+   OCR must use the local Tesseract provider. There is no filename-based OCR fallback.
+2. If you want fully local language data, provide `OCR_TESSDATA_PATH` with the traineddata files available to the server.
+3. Check timeout behavior for OCR and AI in your deployment environment.
 4. Run `npm run lint` and `npm run typecheck`.
 5. Run `npm run build`.
 
@@ -268,15 +268,15 @@ This value is read by:
 
 - Env
   - Set `AI_PROVIDER=remote`
-  - Set `OCR_PROVIDER=remote`
+  - Set `OCR_PROVIDER=tesseract`
   - Set `AI_API_URL`, `AI_API_KEY`, `AI_MODEL`
-  - Set `OCR_API_URL`, `OCR_API_KEY`
+  - Optionally set `OCR_LANGUAGE`, `OCR_TESSDATA_PATH`
   - Set `CORS_ALLOWED_ORIGINS` for mobile and any separate frontend origins
   - Set `NEXT_PUBLIC_API_BASE_URL` only for mobile/external frontend builds
 
 - Secrets
-  - Never expose `AI_API_KEY` or `OCR_API_KEY` in public env vars
-  - Keep provider keys only on the server
+  - Never expose `AI_API_KEY` in public env vars
+  - Keep provider configuration only on the server
   - Do not move OCR or AI calls to the client
 
 - CORS / origin considerations

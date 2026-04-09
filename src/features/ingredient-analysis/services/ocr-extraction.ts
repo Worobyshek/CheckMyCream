@@ -2,7 +2,7 @@ import {
   ocrProviderNameSchema,
   type OCRProviderAdapter,
 } from "@/features/ingredient-analysis/adapters/ocr-provider";
-import { remoteOCRProvider } from "@/features/ingredient-analysis/adapters/remote-ocr-provider";
+import { tesseractOCRProvider } from "@/features/ingredient-analysis/adapters/tesseract-ocr-provider";
 import {
   ocrExtractionResultSchema,
   type OCRExtractionResult,
@@ -27,7 +27,7 @@ export async function extractTextFromImage(file: File): Promise<OCRExtractionRes
 
 function resolveOCRProvider(): OCRProviderAdapter {
   const configuredProvider = ocrProviderNameSchema.safeParse(
-    getServerEnv("OCR_PROVIDER") ?? "remote",
+    getServerEnv("OCR_PROVIDER") ?? "tesseract",
   );
 
   if (!configuredProvider.success) {
@@ -39,8 +39,8 @@ function resolveOCRProvider(): OCRProviderAdapter {
   }
 
   switch (configuredProvider.data) {
-    case "remote":
-      return remoteOCRProvider;
+    case "tesseract":
+      return tesseractOCRProvider;
   }
 }
 
