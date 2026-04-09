@@ -1,6 +1,6 @@
 ﻿"use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 
 import type { IngredientAnalysisResponse, OCRExtractionResponse } from "@/features/ingredient-analysis/schemas";
 import {
@@ -27,6 +27,8 @@ type OCRState =
 type FlowStep = "input" | "confirm" | "result";
 
 export function IngredientAnalysisForm() {
+  const imageInputRef = useRef<HTMLInputElement | null>(null);
+  const cameraInputRef = useRef<HTMLInputElement | null>(null);
   const [submissionState, setSubmissionState] = useState<SubmissionState>({ type: "idle" });
   const [ocrState, setOCRState] = useState<OCRState>({ type: "idle" });
   const [selectedImage, setSelectedImage] = useState<File | null>(null);
@@ -242,18 +244,38 @@ export function IngredientAnalysisForm() {
             <label htmlFor="image" />
             <input
               id="image"
+              ref={imageInputRef}
               className="file-input"
               type="file"
               accept=".jpg,.jpeg,.png,.webp,image/jpeg,image/png,image/webp"
               onChange={handleImageChange}
             />
-            <label
-              htmlFor="image"
-              className="file-picker"
-            >
-              <span className="file-picker-text">Выбрать фото</span>
-            </label>
-            <p className="form-hint"></p>
+            <input
+              id="camera-image"
+              ref={cameraInputRef}
+              className="file-input"
+              type="file"
+              accept="image/*"
+              capture="environment"
+              onChange={handleImageChange}
+            />
+            <div className="file-picker-row">
+              <button
+                className="file-picker"
+                type="button"
+                onClick={() => cameraInputRef.current?.click()}
+              >
+                <span className="file-picker-text">Сделать фото</span>
+              </button>
+              <button
+                className="file-picker"
+                type="button"
+                onClick={() => imageInputRef.current?.click()}
+              >
+                <span className="file-picker-text">Выбрать из галереи</span>
+              </button>
+            </div>
+            <p className="form-hint">На телефоне кнопка "Сделать фото" открывает камеру для нового снимка.</p>
             {selectedImage ? <p className="form-hint">Выбранный файл: {selectedImage.name}</p> : null}
             {imagePreviewUrl ? (
               <div className="image-preview">

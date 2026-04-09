@@ -231,6 +231,12 @@ textarea {
     border-color 160ms ease;
 }
 
+.file-picker-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+
 .file-picker:hover {
   transform: translateY(-1px);
   border-color: rgba(199, 101, 59, 0.3);
@@ -697,6 +703,15 @@ textarea {
   .actions {
     flex-direction: column;
     align-items: stretch;
+  }
+
+  .file-picker-row {
+    flex-direction: column;
+  }
+
+  .file-picker {
+    width: 100%;
+    justify-content: center;
   }
 
   .confirmation-header {
